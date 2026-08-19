@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {MenuBar} from "./components/menu-bar/menu-bar";
 import {AuthService} from "./services/auth-service";
@@ -8,6 +8,7 @@ import {AuthService} from "./services/auth-service";
   imports: [RouterOutlet, MenuBar],
   templateUrl: './app.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss'
 })
 export class App implements OnInit {

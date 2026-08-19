@@ -32,10 +32,11 @@ npm-debug.log
 yarn-error.log
 
 # Miscellaneous
-/frontend/.angular/cache
+/frontend/.angular
 .sass-cache/
 /frontend/connect.lock
 /frontend/coverage
+/frontend/reports
 /frontend/libpeerconnection.log
 testem.log
 /frontend/typings

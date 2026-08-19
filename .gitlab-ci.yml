@@ -5,8 +5,8 @@ stages:
   - deploy
 
 variables:
-  ANGULAR_CLI_VERSION: 20.0.5
-  NODE_VERSION: 24.4.0
+  ANGULAR_CLI_VERSION: 22.1.2
+  NODE_VERSION: 24.19.0
 
 .backend_rules:
   rules:
@@ -139,7 +139,7 @@ lint:frontend:
     policy: pull
 
 .test:frontend: #this job is disabled by default (you may enable it, by removing the leading dot ("."), if frontend-testing is required)
-  image: container.docker.inf.h-brs.de/diarchitect/docker-node-chrome-firefox:node24
+  extends: .node
   stage: test
   needs:
     - install-dependencies:frontend
@@ -148,14 +148,12 @@ lint:frontend:
   script:
     - cd frontend
     - npm link @angular/cli@$ANGULAR_CLI_VERSION
-    - npm test -- --browsers=ChromeHeadlessNoSandbox,FirefoxHeadless --watch=false
+    - npm test
   artifacts:
     when: always
     expire_in: 1 week
     reports:
-      junit:
-        - "./frontend/reports/chrome.xml"
-        - "./frontend/reports/firefox.xml"
+      junit: ./frontend/reports/junit.xml
       coverage_report:
         coverage_format: cobertura
         path: ./frontend/coverage/app/cobertura-coverage.xml
@@ -168,7 +166,7 @@ lint:frontend:
     policy: pull
 
 build:frontend:
-  extends: 
+  extends:
     - .node
     - .with-proxy
   stage: build

@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {MenuBar} from './menu-bar';
+import {provideRouter} from '@angular/router';
 
 describe('MenuBar', () => {
   let component: MenuBar;
@@ -8,7 +9,8 @@ describe('MenuBar', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MenuBar]
+      imports: [MenuBar],
+      providers: [provideRouter([])]
     })
       .compileComponents();
 
