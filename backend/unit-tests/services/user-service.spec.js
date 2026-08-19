@@ -1,7 +1,7 @@
 const chai = require('chai');
 const expect = chai.expect;
-chai.use(require("chai-exclude"));
-chai.use(require('chai-as-promised'));
+chai.use(require('chai-exclude').default);
+chai.use(require('chai-as-promised').default);
 
 const {initMockedMongoDB, resetMockedMongoDB, closeMockedMongoDB} = require('../support/mongodb-mocking');
 
