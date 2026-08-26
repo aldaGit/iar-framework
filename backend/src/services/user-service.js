@@ -14,6 +14,16 @@ exports.add = async function (db, user){
 }
 
 /**
+ * removes the user with the given username
+ * @param db target database
+ * @param {string} username username of the user, which shall be deleted
+ * @return {Promise<any>}
+ */
+exports.remove = async function (db, username){
+    return db.collection('users').deleteOne({username: username});
+}
+
+/**
  * retrieves user from database by its username
  * @param db source database
  * @param {string} username
