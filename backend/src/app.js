@@ -49,18 +49,24 @@ if(environment.db.username){
     db_credentials = environment.db.username+':'+environment.db.password+'@';
 }
 
-MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + environment.db.port + '/?authSource='+environment.db.authSource).then(async dbo =>{ //connect to MongoDb
+const initialized = new Promise((resolve, reject) => {
+    MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + environment.db.port + '/?authSource='+environment.db.authSource).then(async dbo =>{ //connect to MongoDb
 
-    const db = dbo.db(environment.db.name);
-    await initDb(db); //run initialization function
-    app.set('db',db); //register database in the express app
+        const db = dbo.db(environment.db.name);
+        await initDb(db); //run initialization function
+        app.set('db',db); //register database in the express app
 
-    app.listen(environment.port, () => { //start webserver, after database-connection was established
-        console.log('Webserver started.');
+        app.listen(environment.port, () => { //start webserver, after database-connection was established
+            console.log('Webserver started.');
+            resolve();
+        });
     });
 });
 
 async function initDb(db){
+    await db.collection('users').createIndex({"username": 1}, {unique: true}); //usernames must be unique
+    await db.collection('users').createIndex({"email": 1}, {unique: true}); //emails must be unique
+
     if(await db.collection('users').count() < 1){ //if no user exists create admin user
         const userService = require('./services/user-service');
         const User = require("./models/User");
@@ -71,3 +77,6 @@ async function initDb(db){
         console.log('created admin user with password: '+adminPassword);
     }
 }
+
+exports.app = app;
+exports.initialized = initialized;

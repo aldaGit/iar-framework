@@ -6,14 +6,15 @@
     "start": "NODE_ENV=development node ./src/app.js",
     "start_win": "set NODE_ENV=development&& node ./src/app.js",
     "start_production": "set NODE_ENV=production&& node ./src/app.js",
-    "test_unit": "mocha",
+    "test": "set NODE_ENV=development&&mocha",
     "coverage": "c8 --all --reporter=cobertura --reporter=text-summary npm run test_unit"
   },
   "mocha": {
     "exit": true,
     "recursive": true,
     "spec": [
-      "./unit-tests/services/"
+      "./unit-tests/services/",
+      "./integration-tests/apis/"
     ],
     "reporter": "cypress-multi-reporters",
     "reporter-options": "configFile=mocha-reporters-conf.json"
@@ -33,6 +34,7 @@
     "cypress-multi-reporters": "^2.0.5",
     "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
-    "mongo-mock": "^4.2.0"
+    "mongo-mock": "^4.2.0",
+    "supertest": "^7.2.2"
   }
 }

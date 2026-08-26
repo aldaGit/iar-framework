@@ -2,9 +2,9 @@ const environment = {
     production: false,
     port: 8080,
     defaultAdminPassword: '5$c3inw%',
-    db:{
+    db: {
         host: '127.0.0.1',
-        port: 27017,
+        port: 16510,
         username: '',
         password: '',
         authSource: 'admin',
