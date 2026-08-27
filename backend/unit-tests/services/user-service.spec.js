@@ -60,6 +60,20 @@ describe('auth-service unit-tests', function (){
         });
     });
 
+    describe('user deletion tests', function (){
+        it('expect correct user to be deleted', async function (){
+            await db.collection('users').insert([demouser, demouser2]);
+            await userService.remove(db, demouser.username);
+            await expect(db.collection('users').find().toArray()).to.eventually
+                .have.a.lengthOf(1, 'database has not exactly one user left, as it is expected')
+                .and.be.excluding(['_id', 'password']).eqls([demouser2], 'remaining user does not match expected user');
+        });
+
+        it('expect error if the user to be deleted does not exist', async function (){
+            await expect(userService.remove(db, demouser.username)).to.eventually.be.rejectedWith(Error);
+        });
+    });
+
     describe('credential verification test', function (){
         it('expect user to be returned if credentials match', async function (){
             const demouser_copy = copyObject(demouser);

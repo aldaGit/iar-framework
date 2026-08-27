@@ -20,7 +20,8 @@ exports.add = async function (db, user){
  * @return {Promise<any>}
  */
 exports.remove = async function (db, username){
-    return db.collection('users').deleteOne({username: username});
+    const deletionResult = await db.collection('users').deleteOne({username: username});
+    if(deletionResult.deletedCount !== 1) throw new Error('Failed to delete user!');
 }
 
 /**
