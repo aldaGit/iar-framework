@@ -5,10 +5,10 @@ chai.use(require('chai-as-promised').default);
 
 const {initMockedMongoDB, resetMockedMongoDB, closeMockedMongoDB} = require('../support/mongodb-mocking');
 
-const userService = require('../../src/services/user-service');
-const User = require("../../src/models/User");
+const userService = require('../../../src/services/user-service');
+const User = require("../../../src/models/User");
 const crypto = require("crypto");
-const Credentials = require("../../src/models/Credentials");
+const Credentials = require("../../../src/models/Credentials");
 const {copyObject} = require("../support/copyObject");
 
 const demouser = new User('testuser', 'John', 'Doe', 'jd@test.com', 'secret', false);

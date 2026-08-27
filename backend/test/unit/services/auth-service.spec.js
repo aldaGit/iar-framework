@@ -2,8 +2,8 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.use(require('chai-exclude').default);
 
-const authService = require('../../src/services/auth-service');
-const User = require("../../src/models/User");
+const authService = require('../../../src/services/auth-service');
+const User = require("../../../src/models/User");
 
 const demouser = new User('testuser', 'John', 'Doe', 'jd@test.com', 'secret', false);
 
