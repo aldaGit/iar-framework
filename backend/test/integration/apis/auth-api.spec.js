@@ -1,7 +1,6 @@
 const request = require('supertest');
 const { app, initialized} = require('../../../src/app');
 const userService = require('../../../src/services/user-service');
-const User = require("../../../src/models/User");
 const { cookies} = require("supertest");
 const {handleResponse} = require("../support/supertestResponseHandler");
 const {adminTestUser, normalTestUser} = require("../support/testUsers");
