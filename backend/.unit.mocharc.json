@@ -1,0 +1,9 @@
+{
+  "exit": true,
+  "recursive": true,
+  "spec": [
+    "./test/unit"
+  ],
+  "reporter": "cypress-multi-reporters",
+  "reporter-options": "configFile=unit-mocha-reporters-conf.json"
+}
