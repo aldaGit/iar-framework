@@ -87,7 +87,7 @@ integration-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
-    - npm link mocha cypress-multi-reporters
+    - npm link mocha cypress-multi-reporters mocha-junit-reporter
     - npm run test:integration
   artifacts:
     when: always
