@@ -81,6 +81,9 @@ unit-test:backend:
 integration-test:backend:
   extends: .node
   stage: test
+  services:
+    - name: mongo:8
+      alias: mongodb
   rules:
     - !reference [ .backend_rules, rules ]
   needs:
@@ -88,7 +91,7 @@ integration-test:backend:
   script:
     - cd backend
     - npm link mocha cypress-multi-reporters mocha-junit-reporter
-    - npm run test:integration
+    - npm run ci:test:integration
   artifacts:
     when: always
     expire_in: 1 week

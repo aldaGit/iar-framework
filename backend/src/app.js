@@ -17,6 +17,8 @@ const MongoClient = mongodb.MongoClient;
 let environment;
 if(process.env.NODE_ENV === 'development'){
     environment = require('../environments/environment.js').default;
+}else if(process.env.NODE_ENV === 'ci'){
+    environment = require('../environments/environment.ci.js').default;
 }else{
     environment = require('../environments/environment.prod.js').default;
 }

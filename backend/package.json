@@ -9,6 +9,7 @@
     "test:unit": "mocha --config=./.unit.mocharc.json",
     "test:integration": "mocha --config=./.integration.mocharc.json",
     "dev:test:integration": "NODE_ENV=development npm run test:integration",
+    "ci:test:integration": "NODE_ENV=ci npm run test:integration",
     "dev_win:test:integration": "set NODE_ENV=development&&npm run test:integration",
     "coverage:test:unit": "c8 --all --reporter=cobertura --reporter=text-summary npm run test:unit"
   },
