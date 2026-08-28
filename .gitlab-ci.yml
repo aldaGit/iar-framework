@@ -41,7 +41,7 @@ install-dependencies:backend:
   stage: dependencies
   script:
     - cd backend
-    - npm install
+    - npm ci
   rules:
     - !reference [.backend_rules, rules]
   cache:
@@ -87,7 +87,6 @@ integration-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
-    - npm install --global mocha
     - npm run test:integration
   artifacts:
     when: always
@@ -135,7 +134,7 @@ install-dependencies:frontend:
   stage: dependencies
   script:
     - cd frontend
-    - npm install
+    - npm ci
   rules:
     - !reference [ .frontend_rules, rules ]
   cache:
