@@ -60,7 +60,6 @@ unit-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
-    - npm link mocha cypress-multi-reporters
     - npm run coverage:test:unit
   artifacts:
     when: always
@@ -88,6 +87,7 @@ integration-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
+    - npm link mocha cypress-multi-reporters
     - npm run test:integration
   artifacts:
     when: always
