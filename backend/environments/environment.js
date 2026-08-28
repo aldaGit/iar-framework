@@ -4,7 +4,7 @@ const environment = {
     defaultAdminPassword: '5$c3inw%',
     db: {
         host: '127.0.0.1',
-        port: 16510,
+        port: 27017,
         username: '',
         password: '',
         authSource: 'admin',
