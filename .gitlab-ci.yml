@@ -60,6 +60,7 @@ unit-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
+    - npm install --global mocha
     - npm run coverage:test:unit
   artifacts:
     when: always
