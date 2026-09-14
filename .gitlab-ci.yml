@@ -241,5 +241,5 @@ deploy:frontend:
     - chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
     - echo "Test ssh connection"
     - ssh -o StrictHostKeyChecking=no -T "$TARGET_SERVER_USER@$FRONTEND_SERVER_HOST" hostname
-    - ssh  "$TARGET_SERVER_USER@$FRONTEND_SERVER_HOST" rm -rf app &&  mkdir app
+    - ssh  "$TARGET_SERVER_USER@$FRONTEND_SERVER_HOST" rm -rf app &&  mkdir app && chmod +x app
     - scp -r dist/app/browser/* "$TARGET_SERVER_USER@$FRONTEND_SERVER_HOST:./app"
