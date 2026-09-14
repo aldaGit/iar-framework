@@ -90,7 +90,7 @@ integration-test:backend:
     - install-dependencies:backend
   script:
     - cd backend
-    - npm link jest import-local
+    - npm link jest jest-junit
     - npm run ci:test:integration
   artifacts:
     when: always
