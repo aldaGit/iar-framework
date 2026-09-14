@@ -5,14 +5,13 @@ const {handleResponse} = require("../support/supertestResponseHandler");
 const {normalTestUser, adminTestUser} = require("../support/testUsers");
 
 describe('user-api integration tests',() => {
-    before('wait for the backend to be fully initialized', async () => await initialized);
-
-    before('set up test users', async () => {
-        await userService.add(app.get('db'), normalTestUser);
+    beforeAll(async () => {
+        await initialized;                                                      // wait for the backend to be fully initialized
+        await userService.add(app.get('db'), normalTestUser);                   // set up test users
     });
 
-    after('remove test users', async () => {
-        await userService.remove(app.get('db'), normalTestUser.username);
+    afterAll(async () => {
+        await userService.remove(app.get('db'), normalTestUser.username);       // remove test users
     });
 
     describe('GET /api/user', () => {

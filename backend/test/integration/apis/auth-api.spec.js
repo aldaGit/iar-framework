@@ -6,15 +6,15 @@ const {handleResponse} = require("../support/supertestResponseHandler");
 const {adminTestUser, normalTestUser} = require("../support/testUsers");
 
 describe('auth-api integration tests',() => {
-    before('wait for the backend to be fully initialized', async () => await initialized);
 
-    before('set up test users', async () => {
-        await userService.add(app.get('db'), adminTestUser);
+    beforeAll(async () => {
+        await initialized;                                                  // wait for the backend to be fully initialized
+        await userService.add(app.get('db'), adminTestUser);                // set up test users
         await userService.add(app.get('db'), normalTestUser);
     });
 
-    after('remove test users', async () => {
-        await userService.remove(app.get('db'), adminTestUser.username);
+    afterAll(async () => {
+        await userService.remove(app.get('db'), adminTestUser.username);    // remove test users
         await userService.remove(app.get('db'), normalTestUser.username);
     });
 

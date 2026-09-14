@@ -4,17 +4,15 @@ const userService = require('../../../src/services/user-service');
 const {handleResponse} = require("../support/supertestResponseHandler");
 const {normalTestUser, adminTestUser} = require("../support/testUsers");
 const peopleDemoService = require("../../../src/services/people-demo-service");
-const {expect: chaiExpect} = require("chai");
 
 describe('user-api integration tests',() => {
-    before('wait for the backend to be fully initialized', async () => await initialized);
-
-    before('set up test users', async () => {
-        await userService.add(app.get('db'), normalTestUser);
+    beforeAll(async () => {
+        await initialized                                                   // wait for the backend to be fully initialized
+        await userService.add(app.get('db'), normalTestUser);               // set up test users
     });
 
-    after('remove test users', async () => {
-        await userService.remove(app.get('db'), normalTestUser.username);
+    afterAll(async () => {
+        await userService.remove(app.get('db'), normalTestUser.username);   // remove test user
     });
 
     describe('GET /api/user', () => {
@@ -31,7 +29,7 @@ describe('user-api integration tests',() => {
             return  agent.get('/api/people')
                 .expect(200) // response status must be 200
                 .expect((response) =>  {
-                    chaiExpect(response.body).to.be.eql(expectedResponse);
+                    expect(response.body).toEqual(expectedResponse);
                 });
         });
 

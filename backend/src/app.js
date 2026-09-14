@@ -51,6 +51,8 @@ if(environment.db.username){
     db_credentials = environment.db.username+':'+environment.db.password+'@';
 }
 
+let serverWrapper = {};
+
 const initialized = new Promise((resolve, reject) => {
     MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + environment.db.port + '/?authSource='+environment.db.authSource).then(async dbo =>{ //connect to MongoDb
 
@@ -58,7 +60,7 @@ const initialized = new Promise((resolve, reject) => {
         await initDb(db); //run initialization function
         app.set('db',db); //register database in the express app
 
-        app.listen(environment.port, () => { //start webserver, after database-connection was established
+        serverWrapper.server = app.listen(environment.port, undefined, undefined,() => { //start webserver, after database-connection was established
             console.log('Webserver started.');
             resolve();
         });
@@ -81,4 +83,5 @@ async function initDb(db){
 }
 
 exports.app = app;
+exports.serverWrapper = serverWrapper;
 exports.initialized = initialized;

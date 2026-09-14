@@ -1,9 +1,0 @@
-{
-  "exit": true,
-  "recursive": true,
-  "spec": [
-    "./test/integration"
-  ],
-  "reporter": "cypress-multi-reporters",
-  "reporter-options": "configFile=integration-mocha-reporters-conf.json"
-}
