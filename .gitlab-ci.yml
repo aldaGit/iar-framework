@@ -29,6 +29,30 @@ variables:
   before_script:
     - npm config set registry https://sepp-nexus.inf.h-brs.de/repository/npm/
 
+.node-backend:
+  extends: .node
+  cache:  # Cache modules in between jobs
+    key:
+      files:
+        - backend/package-lock.json
+    paths:
+      - backend/.npm/
+  before_script:
+    - cd backend
+    - npm ci --cache .npm --prefer-offline
+
+.node-frontend:
+  extends: .node
+  cache:  # Cache modules in between jobs
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - frontend/.npm/
+  before_script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+
 .with-proxy:
   variables:
     HTTP_PROXY: "http://www-cache:8080"
@@ -37,29 +61,21 @@ variables:
     https_proxy: "http://www-cache:8080"
 
 install-dependencies:backend:
-  extends: .node
+  extends: .node-backend
   stage: dependencies
   script:
-    - cd backend
-    - npm ci
+    - npm ls --all
   rules:
     - !reference [.backend_rules, rules]
-  cache:
-    key:
-      files:
-        - backend/package-lock.json
-    paths:
-      - backend/node_modules
 
 unit-test:backend:
-  extends: .node
+  extends: .node-backend
   stage: test
   rules:
     - !reference [ .backend_rules, rules ]
   needs:
     - install-dependencies:backend
   script:
-    - cd backend
     - npm run coverage:test:unit
   artifacts:
     when: always
@@ -70,16 +86,9 @@ unit-test:backend:
       coverage_report:
         coverage_format: cobertura
         path: ./backend/coverage/cobertura-coverage.xml
-  cache:
-    key:
-      files:
-        - backend/package-lock.json
-    paths:
-      - backend/node_modules
-    policy: pull
 
 integration-test:backend:
-  extends: .node
+  extends: .node-backend
   stage: test
   services:
     - name: mongo:8
@@ -89,8 +98,6 @@ integration-test:backend:
   needs:
     - install-dependencies:backend
   script:
-    - cd backend
-    - npm link jest jest-junit
     - npm run ci:test:integration
   artifacts:
     when: always
@@ -98,13 +105,6 @@ integration-test:backend:
     reports:
       junit:
         - ./backend/results/integration-test-junit.xml
-  cache:
-    key:
-      files:
-        - backend/package-lock.json
-    paths:
-      - backend/node_modules
-    policy: pull
 
 deploy:backend:
   stage: deploy
@@ -134,49 +134,31 @@ deploy:backend:
     - pm2 deploy backend/ecosystem.config.js production
 
 install-dependencies:frontend:
-  extends: .node
+  extends: .node-frontend
   stage: dependencies
   script:
-    - cd frontend
-    - npm ci
+    - npm ls --all
   rules:
     - !reference [ .frontend_rules, rules ]
-  cache:
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/node_modules
 
 lint:frontend:
-  extends: .node
+  extends: .node-frontend
   stage: test
   rules:
     - !reference [ .frontend_rules, rules ]
   needs:
     - install-dependencies:frontend
   script:
-    - cd frontend
-    - npm link @angular/cli@$ANGULAR_CLI_VERSION
-    - ng lint
-  cache:
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/node_modules
-    policy: pull
+    - npm run lint
 
 .test:frontend: #this job is disabled by default (you may enable it, by removing the leading dot ("."), if frontend-testing is required)
-  extends: .node
+  extends: .node-frontend
   stage: test
   needs:
     - install-dependencies:frontend
   rules:
     - !reference [ .frontend_rules, rules ]
   script:
-    - cd frontend
-    - npm link @angular/cli@$ANGULAR_CLI_VERSION
     - npm test
   artifacts:
     when: always
@@ -186,17 +168,10 @@ lint:frontend:
       coverage_report:
         coverage_format: cobertura
         path: ./frontend/coverage/app/cobertura-coverage.xml
-  cache:
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/node_modules
-    policy: pull
 
 build:frontend:
   extends:
-    - .node
+    - .node-frontend
     - .with-proxy
   stage: build
   rules:
@@ -205,19 +180,10 @@ build:frontend:
     - lint:frontend
     #- test:frontend
   script:
-    - cd frontend
-    - npm link @angular/cli@$ANGULAR_CLI_VERSION
     - npm run build -- --base-href=/$TARGET_SERVER_USER/
   artifacts:
     paths:
       - frontend/dist
-  cache:
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/node_modules
-    policy: pull
 
 deploy:frontend:
   image: alpine
