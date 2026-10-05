@@ -8,9 +8,20 @@ const salt = 'integrationArchitectures';
  * @return {Promise<any>}
  */
 exports.add = async function (db, user){
-    user.password = hashPassword(user.password);
+    const password = hashPassword(user.password);
 
-    return (await db.collection('users').insertOne(user)).insertedId; //return unique ID
+    return (await db.collection('users').insertOne({...user, ...{password: password}})).insertedId; //return unique ID
+}
+
+/**
+ * removes the user with the given username
+ * @param db target database
+ * @param {string} username username of the user, which shall be deleted
+ * @return {Promise<any>}
+ */
+exports.remove = async function (db, username){
+    const deletionResult = await db.collection('users').deleteOne({username: username});
+    if(deletionResult.deletedCount !== 1) throw new Error('Failed to delete user!');
 }
 
 /**

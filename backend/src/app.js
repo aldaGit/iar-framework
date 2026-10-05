@@ -17,6 +17,8 @@ const MongoClient = mongodb.MongoClient;
 let environment;
 if(process.env.NODE_ENV === 'development'){
     environment = require('../environments/environment.js').default;
+}else if(process.env.NODE_ENV === 'ci'){
+    environment = require('../environments/environment.ci.js').default;
 }else{
     environment = require('../environments/environment.prod.js').default;
 }
@@ -49,18 +51,26 @@ if(environment.db.username){
     db_credentials = environment.db.username+':'+environment.db.password+'@';
 }
 
-MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + environment.db.port + '/?authSource='+environment.db.authSource).then(async dbo =>{ //connect to MongoDb
+let serverWrapper = {};
 
-    const db = dbo.db(environment.db.name);
-    await initDb(db); //run initialization function
-    app.set('db',db); //register database in the express app
+const initialized = new Promise((resolve, reject) => {
+    MongoClient.connect('mongodb://' + db_credentials + environment.db.host + ':' + environment.db.port + '/?authSource='+environment.db.authSource).then(async dbo =>{ //connect to MongoDb
 
-    app.listen(environment.port, () => { //start webserver, after database-connection was established
-        console.log('Webserver started.');
+        const db = dbo.db(environment.db.name);
+        await initDb(db); //run initialization function
+        app.set('db',db); //register database in the express app
+
+        serverWrapper.server = app.listen(environment.port, undefined, undefined,() => { //start webserver, after database-connection was established
+            console.log('Webserver started.');
+            resolve();
+        });
     });
 });
 
 async function initDb(db){
+    await db.collection('users').createIndex({"username": 1}, {unique: true}); //usernames must be unique
+    await db.collection('users').createIndex({"email": 1}, {unique: true}); //emails must be unique
+
     if(await db.collection('users').count() < 1){ //if no user exists create admin user
         const userService = require('./services/user-service');
         const User = require("./models/User");
@@ -71,3 +81,7 @@ async function initDb(db){
         console.log('created admin user with password: '+adminPassword);
     }
 }
+
+exports.app = app;
+exports.serverWrapper = serverWrapper;
+exports.initialized = initialized;

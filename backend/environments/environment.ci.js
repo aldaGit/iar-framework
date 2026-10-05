@@ -3,7 +3,7 @@ const environment = {
     port: 8080,
     defaultAdminPassword: '5$c3inw%',
     db: {
-        host: '127.0.0.1',
+        host: 'mongodb',
         port: 27017,
         username: '',
         password: '',
